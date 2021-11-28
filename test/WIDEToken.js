@@ -10,7 +10,7 @@ describe("WIDEToken contract", function () {
     let addrs;
 
     beforeEach(async function () {
-        contractFactory = await ethers.getContractFactory("WIDEToken");
+        contractFactory = await ethers.getContractFactory("MockWIDEToken");
         [owner, addr1, addr2, ...addrs] = await ethers.getSigners();
 
         contract = await contractFactory.deploy();
@@ -89,12 +89,7 @@ describe("WIDEToken contract", function () {
     });
 
     describe("Minting", function () {
-        //ExposedWIDEToken.sol is a WIDEToken.sol with public mint function so we can test it
         it("Should let the owner mint tokens", async function () {
-            contractFactory = await ethers.getContractFactory("ExposedWIDEToken");
-            contract = await contractFactory.deploy();
-
-            //mint 100 tokens to addr1
             await contract.mint(addr1.address, 100);
 
             const addr1Balance = await contract.balanceOf(addr1.address);
@@ -102,9 +97,6 @@ describe("WIDEToken contract", function () {
         });
 
         it("Should increase the total supply after minting", async function () {
-            contractFactory = await ethers.getContractFactory("ExposedWIDEToken");
-            contract = await contractFactory.deploy();
-
             await contract.mint(addr1.address, 100);
 
             const ownerBalance = await contract.balanceOf(owner.address);
@@ -112,9 +104,6 @@ describe("WIDEToken contract", function () {
         });
 
         it("Should fail if someone other than owner tries minting", async function () {
-            contractFactory = await ethers.getContractFactory("ExposedWIDEToken");
-            contract = await contractFactory.deploy();
-
             await expect(
                 contract.connect(addr1).mint(addr2.address, 100)
             ).to.be.revertedWith("Ownable: caller is not the owner");
