@@ -49,7 +49,7 @@ describe("WIDEVesting contract", function () {
 
         it("Should vest correct amount of tokens to an address", async function () {
             await vesting.vest(addr1.address, 100);
-            let vestedBalance = await vesting.getInitialBalance(addr1.address);
+            let vestedBalance = await vesting.initialBalances(addr1.address);
             expect(vestedBalance).to.equal(100);
         });
     });

@@ -27,7 +27,7 @@ contract WIDEVesting is Ownable, ReentrancyGuard{
     mapping(address => uint256) public initialBalances;
 
     //changes everytime an user claims some of his tokens
-    mapping(address => uint256) public balances;
+    mapping(address => uint256) public claimed;
 
     constructor(address token_){
         require(token_ != address(0x0));
@@ -38,7 +38,7 @@ contract WIDEVesting is Ownable, ReentrancyGuard{
     function vest(address receiver, uint256 amount) public nonReentrant onlyOwner{
         require(amount <= _token.balanceOf(address(this)), "WIDEVesting: Not enough tokens in the contract balance");
         initialBalances[receiver] = amount;
-        balances[receiver] = 0;
+        claimed[receiver] = 0;
         emit Vested(receiver, amount);
     }
 
@@ -46,19 +46,15 @@ contract WIDEVesting is Ownable, ReentrancyGuard{
         require(startTime <= block.timestamp, "WIDEVesting: You're too early");
         require(tokensAvailable(msg.sender) >= amount, "WIDEVesting: Amount too high");
 
-        balances[msg.sender] += amount;
+        claimed[msg.sender] += amount;
         _token.safeTransfer(msg.sender, amount);
         emit Claimed(msg.sender, amount);
     }
 
-    function getInitialBalance(address receiver) public view returns (uint256){
-        return initialBalances[receiver];
-    }
-
     //number of tokens that are available to address at present moment
-    function tokensAvailable(address receiver) internal view returns (uint256){
+    function tokensAvailable(address receiver) public view returns (uint256){
         uint256 initialBalance = initialBalances[receiver];
-        uint256 balance = balances[receiver];
+        uint256 balance = claimed[receiver];
         require(balance <= initialBalance);
 
         uint256 available;
