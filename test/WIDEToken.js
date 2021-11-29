@@ -10,7 +10,7 @@ describe("WIDEToken contract", function () {
     let addrs;
 
     beforeEach(async function () {
-        contractFactory = await ethers.getContractFactory("MockWIDEToken");
+        contractFactory = await ethers.getContractFactory("WIDEToken");
         [owner, addr1, addr2, ...addrs] = await ethers.getSigners();
 
         contract = await contractFactory.deploy();

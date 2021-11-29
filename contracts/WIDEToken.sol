@@ -13,7 +13,8 @@ contract WIDEToken is ERC20, Ownable{
         _mint(msg.sender, 100000);
     }
 
-    function _mint(address account, uint256 amount) internal onlyOwner override{
-        super._mint(account, amount);
+    //mintable, owner can mint more tokens if he wishes to
+    function mint(address account, uint256 amount) public onlyOwner{
+        _mint(account, amount);
     }
 }
